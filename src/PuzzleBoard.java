@@ -1,7 +1,5 @@
-// PuzzleBoard.java
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.Random;
 
 public class PuzzleBoard extends JPanel {
@@ -11,28 +9,13 @@ public class PuzzleBoard extends JPanel {
     private GameController controller;
     private static final int TILE_SIZE = 80;
     private static final int GAP = 5;
-    private JComboBox<String> sizeSelector;
+    private int padding = 20;
 
     public PuzzleBoard(int size, GameController controller) {
         this.size = size;
         this.controller = controller;
         setLayout(new BorderLayout());
 
-        // Create top panel for size selector
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        topPanel.setOpaque(false);
-
-        String[] sizes = {"3x3", "4x4", "5x5"};
-        sizeSelector = new JComboBox<>(sizes);
-        sizeSelector.setSelectedIndex(size - 3); // Set current size
-        sizeSelector.addActionListener(e -> changePuzzleSize());
-
-        JLabel sizeLabel = new JLabel("Ukuran Puzzle: ");
-        sizeLabel.setForeground(Color.WHITE);
-        topPanel.add(sizeLabel);
-        topPanel.add(sizeSelector);
-
-        // Create puzzle panel
         JPanel puzzlePanel = new JPanel(null) {
             @Override
             public Dimension getPreferredSize() {
@@ -41,10 +24,7 @@ public class PuzzleBoard extends JPanel {
             }
         };
         puzzlePanel.setOpaque(false);
-
-        add(topPanel, BorderLayout.NORTH);
         add(puzzlePanel, BorderLayout.CENTER);
-
         initializeTiles(puzzlePanel);
     }
 
@@ -83,25 +63,6 @@ public class PuzzleBoard extends JPanel {
         });
 
         return tile;
-    }
-
-    private void changePuzzleSize() {
-        String selected = (String) sizeSelector.getSelectedItem();
-        int newSize = Character.getNumericValue(selected.charAt(0));
-        if (newSize != size) {
-            size = newSize;
-            Component[] components = getComponents();
-            for (Component comp : components) {
-                if (comp instanceof JPanel && !(comp instanceof JComboBox)) {
-                    JPanel puzzlePanel = (JPanel) comp;
-                    puzzlePanel.removeAll();
-                    initializeTiles(puzzlePanel);
-                }
-            }
-            revalidate();
-            repaint();
-            controller.resetGame();
-        }
     }
 
     public void acakPuzzle() {
@@ -162,6 +123,6 @@ public class PuzzleBoard extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         int totalSize = (TILE_SIZE * size) + (GAP * (size - 1));
-        return new Dimension(totalSize + 20, totalSize + 60); // Extra space for size selector
+        return new Dimension(totalSize + padding, totalSize + padding);
     }
 }

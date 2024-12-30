@@ -47,6 +47,15 @@ public class GameController {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(400, 500));
 
+        // Tambahkan ComponentListener untuk handle resize
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                mainPanel.revalidate();
+                mainPanel.repaint();
+            }
+        });
+
         mainPanel = createBackgroundPanel();
         frame.add(mainPanel);
 
@@ -198,4 +207,3 @@ public class GameController {
         }
     }
 }
-

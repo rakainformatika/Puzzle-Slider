@@ -1,4 +1,3 @@
-// PuzzleTile.java
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,25 +19,32 @@ public class PuzzleTile extends JButton {
     protected void paintComponent(Graphics g) {
         if (!getText().isEmpty()) {
             Graphics2D g2d = (Graphics2D) g.create();
-            int width = getWidth();
-            int height = getHeight();
-
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            // Main tile background
+            // Main tile background dengan bentuk yang lebih lembut
             g2d.setColor(TILE_COLOR);
-            g2d.fillRoundRect(0, 0, width, height, 15, 15);
+            g2d.fillRoundRect(2, 2, getWidth()-4, getHeight()-4, 15, 15);
 
-            // Highlight effect
-            g2d.setColor(TILE_COLOR.brighter());
-            g2d.drawRoundRect(0, 0, width - 1, height - 1, 15, 15);
-
-            // Shadow effect
-            g2d.setColor(TILE_COLOR.darker());
-            g2d.drawRoundRect(1, 1, width - 2, height - 2, 15, 15);
+            // Efek cahaya halus
+            GradientPaint gradient = new GradientPaint(
+                    0, 0, new Color(255, 255, 255, 50),
+                    0, getHeight(), new Color(0, 0, 0, 25)
+            );
+            g2d.setPaint(gradient);
+            g2d.fillRoundRect(2, 2, getWidth()-4, getHeight()-4, 15, 15);
 
             g2d.dispose();
         }
         super.paintComponent(g);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        Container parent = getParent();
+        if (parent != null) {
+            int size = Math.min(parent.getWidth(), parent.getHeight()) / 5;
+            return new Dimension(size - 10, size - 10);
+        }
+        return super.getPreferredSize();
     }
 }
