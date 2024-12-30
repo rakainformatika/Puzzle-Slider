@@ -3,17 +3,18 @@ import java.awt.*;
 import java.util.Random;
 
 public class PuzzleBoard extends JPanel {
-    private PuzzleTile[][] tiles;
-    private int size;
+    private final PuzzleTile[][] tiles;
+    private final int size;
     private int emptyRow, emptyCol;
-    private GameController controller;
+    private final GameController controller;
     private static final int TILE_SIZE = 80;
     private static final int GAP = 5;
-    private int padding = 20;
 
     public PuzzleBoard(int size, GameController controller) {
         this.size = size;
         this.controller = controller;
+        this.tiles = new PuzzleTile[size][size];
+
         setLayout(new BorderLayout());
 
         JPanel puzzlePanel = new JPanel(null) {
@@ -29,7 +30,6 @@ public class PuzzleBoard extends JPanel {
     }
 
     private void initializeTiles(JPanel panel) {
-        tiles = new PuzzleTile[size][size];
         int count = 1;
 
         for (int i = 0; i < size; i++) {
@@ -70,10 +70,10 @@ public class PuzzleBoard extends JPanel {
         for (int i = 0; i < 1000; i++) {
             int direction = random.nextInt(4);
             switch (direction) {
-                case 0: moveTile(emptyRow - 1, emptyCol); break;
-                case 1: moveTile(emptyRow + 1, emptyCol); break;
-                case 2: moveTile(emptyRow, emptyCol - 1); break;
-                case 3: moveTile(emptyRow, emptyCol + 1); break;
+                case 0 -> moveTile(emptyRow - 1, emptyCol);
+                case 1 -> moveTile(emptyRow + 1, emptyCol);
+                case 2 -> moveTile(emptyRow, emptyCol - 1);
+                case 3 -> moveTile(emptyRow, emptyCol + 1);
             }
         }
         controller.resetGame();
@@ -123,6 +123,41 @@ public class PuzzleBoard extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         int totalSize = (TILE_SIZE * size) + (GAP * (size - 1));
-        return new Dimension(totalSize + padding, totalSize + padding);
+        return new Dimension(totalSize, totalSize);
+    }
+
+    public static class PuzzleTile extends JButton {
+        public PuzzleTile(String text) {
+            super(text);
+
+            // Set font besar
+            setFont(new Font("Arial", Font.BOLD, 20));
+
+            // Set warna latar belakang berbeda
+            setBackground(getRandomColor());
+
+            // Set warna teks berbeda
+            setForeground(getRandomColor());
+
+            setPreferredSize(new Dimension(TILE_SIZE, TILE_SIZE));
+            setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        }
+
+        private Color getRandomColor() {
+            Random rand = new Random();
+            return new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+        }
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Puzzle Slider");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        GameController controller = new GameController();
+        PuzzleBoard board = new PuzzleBoard(3, controller);
+
+        frame.add(board);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
